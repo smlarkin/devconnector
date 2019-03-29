@@ -1,17 +1,19 @@
 const path = require('path')
 const express = require('express')
-const mongoose = require('mongoose')
-
+// const mongoose = require('mongoose')
+const volleyball = require('volleyball')
+const { db } = require('./models')
 const apiRouter = require('./routes')
-const db = require('./config/keys').mongoURI
+// const db = require('./config/keys').mongoURI
 
 const PORT = process.env.PORT || 5000
 const app = express()
 
+app.use(volleyball)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use('/api', apiRouter)
 app.use(express.static(path.join(__dirname, '..', 'public')))
+app.use('/api', apiRouter)
 
 // TEMPORARY
 app.get('/', (req, res, next) => res.send('<h1>Hello World!</h1>'))
@@ -30,7 +32,9 @@ app.use((err, req, res, next) => {
 // CONNECT & LISTEN
 ;(async () => {
   try {
-    await mongoose.connect(db, () => console.log('MongoDB is connected'))
+    // await mongoose.connect(db, { useNewUrlParser: true }, () =>
+    //   console.log('MongoDB is connected')
+    // )
     app.listen(PORT, () => console.log(`Server is listening on port ${PORT}!`))
   } catch (e) {
     console.error(e)
