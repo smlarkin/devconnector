@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const db = require('../config/keys').mongoURI
+const { mongoURI } = require('../config/keys')
 
 class Database {
   constructor() {
@@ -7,7 +7,7 @@ class Database {
   }
   async _connect() {
     try {
-      await mongoose.connect(db, { useNewUrlParser: true }, () =>
+      await mongoose.connect(mongoURI, { useNewUrlParser: true }, () =>
         console.log('Database connection successful')
       )
     } catch (e) {
