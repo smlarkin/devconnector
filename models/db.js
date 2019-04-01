@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const { connect } = require('mongoose')
 const { mongoURI } = require('../config/keys')
 
 class Database {
@@ -7,8 +7,10 @@ class Database {
   }
   async _connect() {
     try {
-      await mongoose.connect(mongoURI, { useNewUrlParser: true }, () =>
-        console.log('Database connection successful')
+      await connect(
+        mongoURI,
+        { useNewUrlParser: true },
+        () => console.log('Database connection successful')
       )
     } catch (e) {
       console.error('Database connection error', e)

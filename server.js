@@ -17,7 +17,7 @@ require('./config/passport')(passport)
 
 app.use('/api', apiRouter)
 
-// TEMPORARY
+// TEST
 app.get('/', (req, res, next) => res.send('<h1>Hello World!</h1>'))
 
 app.use((req, res, next) => {

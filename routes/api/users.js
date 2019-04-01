@@ -6,19 +6,15 @@ const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const { secretOrKey } = require('../../config/keys')
 const { User } = require('../../models')
-const { validate } = require('../../validation')
+const { validateUserInput } = require('../../validation')
 const hash = promisify(bcrypt.hash)
 const compare = promisify(bcrypt.compare)
 const sign = promisify(jwt.sign)
 
-// TEST
-router.get('/test', (req, res, next) => res.json({ hello: 'world' }))
-
-// REGISTER
 router.post('/register', async (req, res, next) => {
   try {
     const { name, email, password, password2 } = req.body
-    const { errors, isValid } = validate({
+    const { errors, isValid } = validateUserInput({
       name,
       email,
       password,
@@ -51,11 +47,10 @@ router.post('/register', async (req, res, next) => {
   }
 })
 
-// LOGIN
 router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body
-    const { errors, isValid } = validate({
+    const { errors, isValid } = validateUserInput({
       email,
       password,
     })
@@ -78,7 +73,7 @@ router.post('/login', async (req, res, next) => {
 
     const { id, name, avatar } = user
     const generatedToken = await sign({ id, name, avatar }, secretOrKey, {
-      expiresIn: 3600,
+      expiresIn: 7200,
     })
 
     return res.json({
