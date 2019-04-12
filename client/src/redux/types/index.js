@@ -1,0 +1,4 @@
+export const GET_ERRORS = 'GET_ERRORS'
+export const RESET_ERRORS = 'RESET_ERRORS'
+export const REGISTERED_USER = 'REGISTERED_USER'
+export const LOGGEDIN_USER = 'LOGGEDIN_USER'

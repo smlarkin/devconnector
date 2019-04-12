@@ -1,0 +1,5 @@
+export { default as Login } from './auth/Login'
+export { default as Register } from './auth/Register'
+export { default as Footer } from './layout/Footer'
+export { default as Landing } from './layout/Landing'
+export { default as Navbar } from './layout/Navbar'
