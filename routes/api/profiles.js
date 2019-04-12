@@ -15,15 +15,13 @@ router.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
     try {
-      const errors = {}
       const profile = await Profile.findOne({ user: req.user.id }).populate(
         'user',
         ['name', 'avatar']
       )
 
       if (!profile) {
-        errors.profile = 'there is no profile for this user'
-        return res.status(404).json(errors)
+        return res.status(404).json({ profile: 'no profile found' })
       }
 
       return res.json(profile)
@@ -182,12 +180,10 @@ router.delete(
   passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
     try {
-      const errors = {}
       const profile = await Profile.findOne({ user: req.user.id })
 
       if (!profile) {
-        errors.profile = 'there is no profile for this user'
-        return res.status(404).json(errors)
+        return res.status(404).json({ profile: 'no profile found' })
       }
 
       profile.education = profile.education.filter(
@@ -229,7 +225,7 @@ router.post(
       const profile = await Profile.findOne({ user: req.user.id })
 
       if (!profile) {
-        errors.profile = 'there is no profile for this user'
+        errors.profile = 'no profile found'
         return res.status(404).json(errors)
       }
 
@@ -283,12 +279,10 @@ router.delete(
 // PUBLIC
 router.get('/all', async (req, res, next) => {
   try {
-    const errors = {}
     const profiles = await Profile.find().populate('user', ['name', 'avatar'])
 
     if (!profiles) {
-      errors.profile = 'there is no profiles at this time'
-      return res.status(404).json(errors)
+      return res.status(404).json({ profiles: 'no profiles found' })
     }
 
     return res.json(profiles)
@@ -299,14 +293,12 @@ router.get('/all', async (req, res, next) => {
 
 router.get('/handle/:handle', async (req, res, next) => {
   try {
-    const errors = {}
     const profile = await Profile.findOne({
       handle: req.params.handle,
     }).populate('user', ['name', 'avatar'])
 
     if (!profile) {
-      errors.profile = 'there is no profile for this user'
-      return res.status(404).json(errors)
+      return res.status(404).json({ profile: 'no profile found' })
     }
 
     return res.json(profile)
@@ -317,12 +309,10 @@ router.get('/handle/:handle', async (req, res, next) => {
 
 router.get('/id/:user_id', async (req, res, next) => {
   try {
-    const errors = {}
     const user = req.params.user_id
 
     if (!ObjectId.isValid(user)) {
-      errors.profile = 'this is not a valid user id'
-      return res.status(404).json(errors)
+      return res.status(404).json({ user: 'not a valid user id' })
     }
 
     const profile = await Profile.findOne({
@@ -330,8 +320,7 @@ router.get('/id/:user_id', async (req, res, next) => {
     }).populate('user', ['name', 'avatar'])
 
     if (!profile) {
-      errors.profile = 'there is no profile for this user'
-      return res.status(404).json(errors)
+      return res.status(404).json({ profile: 'no profile found' })
     }
 
     return res.json(profile)

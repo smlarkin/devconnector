@@ -13,7 +13,7 @@ router.post(
       const post = await Post.findById(req.params.id)
 
       if (!post) {
-        res.status(404).json({ message: 'post not found' })
+        res.status(404).json({ post: 'post not found' })
       }
 
       const alreadyLiked = post.likes.filter(like => {
@@ -21,7 +21,7 @@ router.post(
       })
 
       if (alreadyLiked.length) {
-        return res.json({ message: 'user already liked this post' })
+        return res.json({ post: 'user already liked this post' })
       }
 
       post.likes.unshift({ user: req.user.id })
@@ -44,7 +44,7 @@ router.post(
       const post = await Post.findById(req.params.id)
 
       if (!post) {
-        res.status(404).json({ message: 'post not found' })
+        res.status(404).json({ post: 'post not found' })
       }
 
       post.likes = post.likes.filter(like => {
@@ -96,15 +96,15 @@ router.delete(
       const post = await Post.findById(req.params.id)
 
       if (!post) {
-        res.status(404).json({ message: 'post not found' })
+        res.status(404).json({ post: 'post not found' })
       }
 
       if (post.user.toString() !== req.user.id) {
-        return res.status(401).json({ message: 'user not authorized' })
+        return res.status(401).json({ user: 'user not authorized' })
       }
 
       await post.remove()
-      return res.json({ message: 'success' })
+      return res.json({ post: 'delete success' })
     } catch (e) {
       next(e)
     }
@@ -127,7 +127,7 @@ router.post(
       const post = await Post.findById(req.params.id)
 
       if (!post) {
-        res.status(404).json({ message: 'post not found' })
+        res.status(404).json({ post: 'post not found' })
       }
 
       const comment = { user: req.user.id, text, name, avatar }
@@ -152,7 +152,7 @@ router.delete(
       const post = await Post.findById(req.params.id)
 
       if (!post) {
-        res.status(404).json({ message: 'post not found' })
+        res.status(404).json({ post: 'post not found' })
       }
 
       post.comments = post.comments.filter(
@@ -173,7 +173,7 @@ router.get('/', async (req, res, next) => {
   try {
     const posts = await Post.find().sort({ date: -1 })
 
-    if (!posts) return res.status(404).json({ message: 'no posts found' })
+    if (!posts) return res.status(404).json({ posts: 'no posts found' })
 
     return res.json(posts)
   } catch (e) {
@@ -185,7 +185,7 @@ router.get('/:id', async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id)
 
-    if (!post) return res.status(404).json({ message: 'no post found' })
+    if (!post) return res.status(404).json({ post: 'no post found' })
 
     return res.json(post)
   } catch (e) {
