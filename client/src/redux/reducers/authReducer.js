@@ -1,4 +1,5 @@
-import { REGISTERED_USER } from '../types'
+import { REGISTERED_USER, SET_USER } from '../types'
+import { isEmpty } from '../../utils'
 
 const initialState = {
   isAuthenticated: false,
@@ -11,6 +12,12 @@ const authReducer = (state = initialState, action) => {
   switch (type) {
     case REGISTERED_USER:
       return { ...state, user: payload }
+    case SET_USER:
+      return {
+        ...state,
+        isAuthenticated: !isEmpty(payload),
+        user: payload,
+      }
     default:
       return state
   }

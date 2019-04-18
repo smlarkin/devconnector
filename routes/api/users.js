@@ -73,7 +73,7 @@ router.post('/login', async (req, res, next) => {
 
     const { id, name, avatar } = user
     const generatedToken = await sign({ id, name, avatar }, secretOrKey, {
-      expiresIn: 7200,
+      expiresIn: 3600,
     })
 
     return res.json({

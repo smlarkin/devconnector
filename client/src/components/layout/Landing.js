@@ -1,7 +1,15 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Link, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-const Landing = () => {
+const Landing = props => {
+  useEffect(() => {
+    if (props.auth.isAuthenticated) {
+      props.history.push('./dashboard')
+    }
+  }, [props.auth.isAuthenticated])
+
   return (
     <div className="landing">
       <div className="dark-overlay landing-inner text-light">
@@ -29,4 +37,17 @@ const Landing = () => {
   )
 }
 
-export default Landing
+Landing.propTypes = {
+  auth: PropTypes.object.isRequired,
+  // error: PropTypes.object.isRequired,
+}
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  // error: state.error,
+})
+
+export default connect(
+  mapStateToProps,
+  null
+)(withRouter(Landing))

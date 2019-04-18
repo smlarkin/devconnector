@@ -1,4 +1,8 @@
-import { REGISTERED_USER, LOGGEDIN_USER } from '../types'
+import jwtDecode from 'jwt-decode'
+import { REGISTERED_USER, SET_USER } from '../types'
+import { setAuthToken } from '../../utils'
+import { clearProfile } from './'
+
 // import { getErrors, resetErrors } from './'
 
 const registeredUser = user => ({
@@ -21,8 +25,8 @@ export const registerUser = userData => async (
   }
 }
 
-const LoggedinUser = userData => ({
-  type: LOGGEDIN_USER,
+const setUser = userData => ({
+  type: SET_USER,
   payload: userData,
 })
 
@@ -31,9 +35,43 @@ export const loginUser = userData => async (dispatch, getState, { axios }) => {
     const {
       data: { token },
     } = await axios.post('/api/users/login', userData)
+
     localStorage.setItem('jwtToken', token)
-    // setAuthToken(token)
-    // return dispatch(LoggedinUser(data))
+    setAuthToken(token, axios)
+
+    const decoded = jwtDecode(token)
+
+    return dispatch(setUser(decoded))
+  } catch (err) {
+    throw err.response.data
+  }
+}
+
+export const logoutUser = () => async (dispatch, getState, { axios }) => {
+  try {
+    localStorage.removeItem('jwtToken')
+    setAuthToken(false, axios)
+    return dispatch(setUser({}))
+  } catch (err) {
+    throw err.response.data
+  }
+}
+
+export const setLoggedinUser = async (dispatch, axios) => {
+  try {
+    if (localStorage.jwtToken) {
+      const decoded = jwtDecode(localStorage.jwtToken)
+      const currentTime = Date.now() / 1000
+
+      if (decoded.exp < currentTime) {
+        dispatch(clearProfile())
+        logoutUser()(dispatch, null, { axios })
+        window.location.href = '/login'
+      } else {
+        setAuthToken(localStorage.jwtToken, axios)
+        dispatch(setUser(decoded))
+      }
+    }
   } catch (err) {
     throw err.response.data
   }
