@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { getProfile, logErrors } from '../../redux/actions'
-import { Spinner } from '../'
+import { getProfile, logErrors, deleteAccount } from '../../redux/actions'
+import { Spinner, ProfileActions, Experience, Education } from '../'
 
 const Dashboard = props => {
   const [content, setContent] = useState('')
@@ -12,6 +12,22 @@ const Dashboard = props => {
     auth: { user },
     profile: { profile, loading },
   } = props
+
+  const displayProfile = fetchedProfile => (
+    <div>
+      <p className="lead text-muted">
+        Welcome{' '}
+        <Link to={`/profiles/${fetchedProfile.handle}`}>{user.name}</Link>
+      </p>
+      <ProfileActions />
+      <Experience experience={profile.experience} />
+      <Education education={profile.education} />
+      <div style={{ marginBottom: 60 }} />
+      <button onClick={handleDelete} className="btn btn-danger">
+        Delete My Account
+      </button>
+    </div>
+  )
 
   const noProfile = (
     <div>
@@ -23,12 +39,25 @@ const Dashboard = props => {
     </div>
   )
 
+  const handleDelete = async () => {
+    try {
+      const deleted = await props.deleteAccount()
+      if (deleted) {
+        props.logErrors({})
+        props.history.push('/')
+      }
+    } catch (err) {
+      props.logErrors(err)
+      console.error('errors', err)
+    }
+  }
+
   useEffect(() => {
     if (!profile || loading) {
       props.getProfile()
       setContent(<Spinner />)
     } else if (Object.keys(profile).length) {
-      setContent(<h1>TODO: DISPLAY PROFILE</h1>)
+      setContent(displayProfile(profile))
     } else {
       setContent(noProfile)
     }
@@ -50,6 +79,7 @@ const Dashboard = props => {
 
 Dashboard.propTypes = {
   getProfile: PropTypes.func.isRequired,
+  deleteAccount: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   error: PropTypes.object.isRequired,
@@ -63,6 +93,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getProfile: user => dispatch(getProfile(user)),
+  deleteAccount: () => dispatch(deleteAccount()),
   logErrors: err => dispatch(logErrors(err)),
 })
 

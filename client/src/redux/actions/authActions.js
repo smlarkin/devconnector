@@ -3,8 +3,6 @@ import { REGISTERED_USER, SET_USER } from '../types'
 import { setAuthToken } from '../../utils'
 import { clearProfile } from './'
 
-// import { getErrors, resetErrors } from './'
-
 const registeredUser = user => ({
   type: REGISTERED_USER,
   payload: user,
@@ -17,15 +15,13 @@ export const registerUser = userData => async (
 ) => {
   try {
     const { data } = await axios.post('/api/users/register', userData)
-    // await dispatch(resetErrors())
     return dispatch(registeredUser(data))
   } catch (err) {
-    // await dispatch(getErrors(err))
     throw err.response.data
   }
 }
 
-const setUser = userData => ({
+export const setUser = userData => ({
   type: SET_USER,
   payload: userData,
 })
@@ -35,12 +31,9 @@ export const loginUser = userData => async (dispatch, getState, { axios }) => {
     const {
       data: { token },
     } = await axios.post('/api/users/login', userData)
-
     localStorage.setItem('jwtToken', token)
     setAuthToken(token, axios)
-
     const decoded = jwtDecode(token)
-
     return dispatch(setUser(decoded))
   } catch (err) {
     throw err.response.data
@@ -62,7 +55,6 @@ export const setLoggedinUser = async (dispatch, axios) => {
     if (localStorage.jwtToken) {
       const decoded = jwtDecode(localStorage.jwtToken)
       const currentTime = Date.now() / 1000
-
       if (decoded.exp < currentTime) {
         dispatch(clearProfile())
         logoutUser()(dispatch, null, { axios })

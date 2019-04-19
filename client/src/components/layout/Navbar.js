@@ -20,14 +20,19 @@ const Navbar = props => {
   }
 
   const authLinks = (
-    <ul className="navbar-nav ml-auto">
+    <ul className="navbar-nav ml-auto" style={{ marginTop: 7 }}>
+      <li className="nav-item">
+        <Link className="nav-link" to="/dashboard">
+          Dashboard
+        </Link>
+      </li>
       <li className="nav-item">
         <Link className="nav-link" to="/" onClick={handleClick}>
           <img
             className="rounded-circle"
             src={user.avatar}
             alt={user.name}
-            style={{ width: 25, marginRight: 5 }}
+            style={{ width: 25, marginRight: 15 }}
             title="connect your email to Gravatar for an image to display"
           />
           Logout

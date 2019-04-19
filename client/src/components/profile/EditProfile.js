@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { logErrors, createProfile } from '../../redux/actions'
+import { getProfile, logErrors, createProfile } from '../../redux/actions'
 import {
   TextFieldGroup,
   InputGroup,
@@ -10,7 +10,7 @@ import {
   TextAreaFieldGroup,
 } from '../'
 
-const CreateProfile = props => {
+const EditProfile = props => {
   const [showSocial, setShowSocial] = useState(false)
   const [handle, setHandle] = useState('')
   const [company, setCompany] = useState('')
@@ -26,6 +26,62 @@ const CreateProfile = props => {
   const [linkedin, setLinkedin] = useState('')
   const [instagram, setInstagram] = useState('')
   const [errors, setErrors] = useState('')
+
+  useEffect(() => {
+    ;(async () => {
+      if (!props.profile.profile) {
+        const {
+          payload: {
+            handle,
+            company,
+            website,
+            status,
+            skills,
+            bio,
+            githubUserName,
+            social,
+          },
+        } = await props.getProfile()
+        !Object.values(social).includes('') && setShowSocial(true)
+        setHandle(handle)
+        setCompany(company)
+        setWebsite(website)
+        setStatus(status)
+        setSkills(skills.join(','))
+        setBio(bio)
+        setGithubUserName(githubUserName)
+        setYoutube(social.youtube)
+        setTwitter(social.twitter)
+        setFacebook(social.facebook)
+        setLinkedin(social.linkedin)
+        setInstagram(social.instagram)
+      } else {
+        const {
+          handle,
+          company,
+          website,
+          status,
+          skills,
+          bio,
+          githubUserName,
+          social,
+        } = props.profile.profile
+        !Object.values(social).includes('') && setShowSocial(true)
+        setHandle(handle)
+        setCompany(company)
+        setWebsite(website)
+        setStatus(status)
+        setSkills(skills.join(','))
+        setBio(bio)
+        setGithubUserName(githubUserName)
+        setYoutube(social.youtube)
+        setTwitter(social.twitter)
+        setFacebook(social.facebook)
+        setLinkedin(social.linkedin)
+        setInstagram(social.instagram)
+      }
+    })()
+  }, [])
 
   const handleSubmit = async e => {
     try {
@@ -73,8 +129,7 @@ const CreateProfile = props => {
     }
   }
 
-  const handleClick = e => {
-    e.preventDefault()
+  const handleClick = () => {
     setShowSocial(!showSocial)
   }
 
@@ -96,10 +151,7 @@ const CreateProfile = props => {
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
-              <h1 className="display-4 text-center">Craft Your Profile</h1>
-              <p className="lead text-center">
-                Let the world know who you are.
-              </p>
+              <h1 className="display-4 text-center">Edit Your Profile</h1>
               <small className="d-block pb-3 text-center">
                 * fields are required
               </small>
@@ -225,7 +277,7 @@ const CreateProfile = props => {
                 )}
                 <input
                   type="submit"
-                  value="Submit"
+                  value="submit"
                   className="btn btn-info btn-block mt-4"
                 />
               </form>
@@ -237,8 +289,9 @@ const CreateProfile = props => {
   )
 }
 
-CreateProfile.propTypes = {
+EditProfile.propTypes = {
   createProfile: PropTypes.func.isRequired,
+  getProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   error: PropTypes.object.isRequired,
 }
@@ -250,10 +303,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   createProfile: profileData => dispatch(createProfile(profileData)),
+  getProfile: () => dispatch(getProfile()),
   logErrors: err => dispatch(logErrors(err)),
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(CreateProfile))
+)(withRouter(EditProfile))

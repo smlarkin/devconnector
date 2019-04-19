@@ -19,7 +19,7 @@ const validateProfileInput = data => {
         key === 'youtube' ||
         key === 'twitter' ||
         key === 'facebook' ||
-        key === 'linkein' ||
+        key === 'linkedin' ||
         key === 'instagram') &&
       !isEmpty(data[key]) &&
       !validator.isURL(data[key])

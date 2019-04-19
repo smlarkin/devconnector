@@ -117,7 +117,7 @@ router.delete(
     try {
       await Profile.findOneAndRemove({ user: req.user.id })
       await User.findOneAndRemove({ _id: req.user.id })
-      return res.status(404).json({ success: true })
+      return res.status(200).json({ success: true })
     } catch (e) {
       next(e)
     }

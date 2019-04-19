@@ -41,7 +41,7 @@ const Register = props => {
 
   useEffect(() => {
     if (props.auth.isAuthenticated) {
-      props.history.push('./dashboard')
+      props.history.push('/dashboard')
     }
   }, [])
 
