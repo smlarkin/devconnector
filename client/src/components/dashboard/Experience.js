@@ -57,6 +57,7 @@ const Experience = props => {
 }
 
 Experience.propTypes = {
+  experience: PropTypes.array.isRequired,
   deleteExperience: PropTypes.func.isRequired,
   logErrors: PropTypes.func.isRequired,
 }

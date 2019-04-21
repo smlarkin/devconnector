@@ -16,4 +16,6 @@ export {
   addEducation,
   deleteExperience,
   deleteEducation,
+  getProfiles,
+  getProfileByHandle,
 } from './profileActions'

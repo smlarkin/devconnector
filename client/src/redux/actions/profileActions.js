@@ -1,4 +1,9 @@
-import { SET_PROFILE, LOADING_PROFILE, CLEAR_PROFILE } from '../types'
+import {
+  SET_PROFILE,
+  LOADING_PROFILE,
+  CLEAR_PROFILE,
+  SET_PROFILES,
+} from '../types'
 import { setUser } from './'
 
 const loadingProfile = () => ({
@@ -10,18 +15,13 @@ const setProfile = profile => ({
   payload: profile,
 })
 
-export const getProfile = () => async (dispatch, getState, { axios }) => {
-  try {
-    dispatch(loadingProfile())
-    const { data } = await axios.get('/api/profiles')
-    return dispatch(setProfile(data))
-  } catch (err) {
-    return dispatch(setProfile({}))
-  }
-}
-
 export const clearProfile = () => ({
   type: CLEAR_PROFILE,
+})
+
+const setProfiles = profiles => ({
+  type: SET_PROFILES,
+  payload: profiles,
 })
 
 export const createProfile = profileData => async (
@@ -35,6 +35,16 @@ export const createProfile = profileData => async (
     return dispatch(setProfile(data))
   } catch (err) {
     throw err.response.data
+  }
+}
+
+export const getProfile = () => async (dispatch, getState, { axios }) => {
+  try {
+    dispatch(loadingProfile())
+    const { data } = await axios.get('/api/profiles')
+    return dispatch(setProfile(data))
+  } catch (err) {
+    return dispatch(setProfile({}))
   }
 }
 
@@ -69,20 +79,6 @@ export const addExperience = experienceData => async (
   }
 }
 
-export const addEducation = educationData => async (
-  dispatch,
-  getState,
-  { axios }
-) => {
-  try {
-    dispatch(loadingProfile())
-    const { data } = await axios.post('/api/profiles/education', educationData)
-    return dispatch(setProfile(data))
-  } catch (err) {
-    throw err.response.data
-  }
-}
-
 export const deleteExperience = experienceId => async (
   dispatch,
   getState,
@@ -93,6 +89,20 @@ export const deleteExperience = experienceId => async (
     const { data } = await axios.delete(
       `/api/profiles/experience/${experienceId}`
     )
+    return dispatch(setProfile(data))
+  } catch (err) {
+    throw err.response.data
+  }
+}
+
+export const addEducation = educationData => async (
+  dispatch,
+  getState,
+  { axios }
+) => {
+  try {
+    dispatch(loadingProfile())
+    const { data } = await axios.post('/api/profiles/education', educationData)
     return dispatch(setProfile(data))
   } catch (err) {
     throw err.response.data
@@ -111,6 +121,32 @@ export const deleteEducation = educationId => async (
     )
     return dispatch(setProfile(data))
   } catch (err) {
+    throw err.response.data
+  }
+}
+
+export const getProfiles = () => async (dispatch, getState, { axios }) => {
+  try {
+    dispatch(loadingProfile())
+    const { data } = await axios.get('/api/profiles/all')
+    return dispatch(setProfiles(data))
+  } catch (err) {
+    dispatch(setProfiles(null))
+    throw err.response.data
+  }
+}
+
+export const getProfileByHandle = handle => async (
+  dispatch,
+  getState,
+  { axios }
+) => {
+  try {
+    dispatch(loadingProfile())
+    const { data } = await axios.get(`/api/profiles/handle/${handle}`)
+    return dispatch(setProfile(data))
+  } catch (err) {
+    dispatch(setProfile(null))
     throw err.response.data
   }
 }

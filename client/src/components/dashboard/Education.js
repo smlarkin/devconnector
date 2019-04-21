@@ -57,6 +57,7 @@ const Education = props => {
 }
 
 Education.propTypes = {
+  education: PropTypes.array.isRequired,
   deleteEducation: PropTypes.func.isRequired,
   logErrors: PropTypes.func.isRequired,
 }
