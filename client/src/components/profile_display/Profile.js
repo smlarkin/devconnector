@@ -1,30 +1,41 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { getProfileByHandle } from '../../redux/actions'
+import { getProfileByHandle, getRepos } from '../../redux/actions'
 import {
   ProfileAbout,
   ProfileCreds,
   ProfileGitHub,
   ProfileHeader,
   Spinner,
+  NotFound,
 } from '../'
 
 const Profile = props => {
   const {
     profile: { profile, loading },
+    repos,
   } = props
+
   let profileContent = null
 
-  if (!profile || loading) {
+  if (profile && profile.githubUserName && !repos.length) {
+    props
+      .getRepos(profile.githubUserName)
+      .catch(err => console.error('Error:', err))
+  }
+
+  if (loading) {
     profileContent = <Spinner />
-  } else {
+  } else if (profile) {
     profileContent = (
       <div>
         <div className="row">
           <div className="col-md-6">
-            <Link to="/profiles">Back To Profiles</Link>
+            <Link to="/profiles" className="btn btn-light">
+              Back To Profiles
+            </Link>
           </div>
           <div className="col-md-6" />
         </div>
@@ -34,25 +45,26 @@ const Profile = props => {
           education={profile.education}
           experience={profile.experience}
         />
-        {profile.githubUserName ? (
-          <ProfileGitHub username={profile.githubUserName} />
-        ) : null}
+        {repos.length ? <ProfileGitHub repos={repos} /> : null}
       </div>
     )
   }
 
   useEffect(() => {
-    props.match.params.handle &&
-      props
-        .getProfileByHandle(props.match.params.handle)
-        .catch(err => console.error(err))
+    if (props.match.params.handle) {
+      props.getProfileByHandle(props.match.params.handle).catch(err => {
+        console.error('Error:', err)
+      })
+    }
   }, [])
 
   return (
     <div className="profile">
       <div className="container">
         <div className="row">
-          <div className="col-md-12">{profileContent}</div>
+          <div className="col-md-12">
+            {profileContent ? profileContent : <NotFound />}
+          </div>
         </div>
       </div>
     </div>
@@ -62,14 +74,18 @@ const Profile = props => {
 Profile.propTypes = {
   getProfileByHandle: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
+  getRepos: PropTypes.func.isRequired,
+  repos: PropTypes.array.isRequired,
 }
 
 const mapStateToProps = state => ({
   profile: state.profile,
+  repos: state.repo,
 })
 
 const mapDispatchToProps = dispatch => ({
   getProfileByHandle: handle => dispatch(getProfileByHandle(handle)),
+  getRepos: githubUserName => dispatch(getRepos(githubUserName)),
 })
 
 export default connect(

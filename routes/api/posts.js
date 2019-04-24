@@ -13,7 +13,7 @@ router.post(
       const post = await Post.findById(req.params.id)
 
       if (!post) {
-        res.status(404).json({ post: 'post not found' })
+        return res.status(404).json({ post: 'post not found' })
       }
 
       const alreadyLiked = post.likes.filter(like => {
@@ -21,7 +21,7 @@ router.post(
       })
 
       if (alreadyLiked.length) {
-        return res.json({ post: 'user already liked this post' })
+        return res.status(404).json({ post: 'user already liked this post' })
       }
 
       post.likes.unshift({ user: req.user.id })

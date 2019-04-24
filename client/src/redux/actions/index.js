@@ -1,4 +1,5 @@
 export { logErrors } from './errorActions'
+export { getRepos } from './repoActions'
 export {
   setUser,
   registerUser,
@@ -19,3 +20,14 @@ export {
   getProfiles,
   getProfileByHandle,
 } from './profileActions'
+
+export {
+  addPost,
+  getPosts,
+  deletePost,
+  addLike,
+  removeLike,
+  getPost,
+  addComment,
+  deleteComment,
+} from './postActions'

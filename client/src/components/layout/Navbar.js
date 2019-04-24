@@ -21,6 +21,9 @@ const Navbar = props => {
 
   const authLinks = (
     <ul className="navbar-nav ml-auto" style={{ marginTop: 7 }}>
+      <Link className="nav-link" to="/feed">
+        Post Feed
+      </Link>
       <li className="nav-item">
         <Link className="nav-link" to="/dashboard">
           Dashboard
