@@ -10,15 +10,18 @@ const app = express()
 app.use(volleyball)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(express.static(path.join(__dirname, '..', 'public')))
 app.use(passport.initialize())
 
 require('./config/passport')(passport)
 
 app.use('/api', apiRouter)
 
-// TEST
-app.get('/', (req, res, next) => res.send('<h1>Hello World!</h1>'))
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'))
+  app.get('*', (req, res, next) => {
+    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 app.use((req, res, next) => {
   const err = new Error('Not Found')
@@ -31,13 +34,5 @@ app.use((err, req, res, next) => {
   console.error(err)
   res.send('Something went wrong: ' + err.message)
 })
-// START LISTENING
-;(async () => {
-  try {
-    await app.listen(PORT, () =>
-      console.log(`Server is listening on port ${PORT}!`)
-    )
-  } catch (e) {
-    console.error(e)
-  }
-})()
+
+app.listen(PORT, () => console.log(`Server is listening on port ${PORT}!`))
