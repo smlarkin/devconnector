@@ -1,4 +1,4 @@
 .DS_Store
-/config/keys.js
+/config/secrets.js
 /node_modules
 package-lock.json

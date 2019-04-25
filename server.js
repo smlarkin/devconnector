@@ -31,11 +31,12 @@ app.use((err, req, res, next) => {
   console.error(err)
   res.send('Something went wrong: ' + err.message)
 })
-
-// CONNECT & LISTEN (can convert to async if necessary)
-;(() => {
+// START LISTENING
+;(async () => {
   try {
-    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}!`))
+    await app.listen(PORT, () =>
+      console.log(`Server is listening on port ${PORT}!`)
+    )
   } catch (e) {
     console.error(e)
   }

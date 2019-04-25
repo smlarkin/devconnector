@@ -13,6 +13,7 @@
   "author": "Shawn Michael Larkin",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "^4.1.0",
     "express": "^4.16.4",

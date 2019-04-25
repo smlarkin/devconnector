@@ -16,10 +16,10 @@ const Posts = ({ getPosts, post }) => {
   }
 
   useEffect(() => {
-    if (!posts.length && !loading) {
-      getPosts()
-    }
-  })
+    // if (!posts.length && !loading) {
+    // }
+    getPosts()
+  }, [])
 
   return (
     <div className="feed">
