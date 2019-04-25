@@ -21,7 +21,7 @@ const ProfileHeader = ({ profile }) => {
             <h1 className="display-4 text-center">{user.name}</h1>
             <p className="lead text-center">
               {status}
-              {company ? <span>at {company}</span> : null}
+              {company ? <span> at {company}</span> : null}
             </p>
             <p>{location ? <span>{location}</span> : null}</p>
             <p>
